@@ -29,8 +29,19 @@ def grad_descent(step_fn, env):
     the starting position) visited during the gradient descent. 
     
     """
-    # Question ONE
-    pass
+    
+    initial_position = env.current_position()
+    visited_positions = [initial_position]
+
+    while env.status() == Environment.ACTIVELY_SEARCHING:
+        current_position = env.current_position()
+        delta_position = step_fn(current_position)
+        new_position = current_position + delta_position
+        env.step_to(new_position)
+        visited_positions.append(new_position)
+
+    return visited_positions
+    
 
 
 def momentum_grad_descent(rate, env):
