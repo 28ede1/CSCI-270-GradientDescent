@@ -67,11 +67,22 @@ class MomentumStepFunction:
     """    
     def __init__(self, loss_gradient, learning_rate, momentum_rate):
         # Question TWO
-        pass
-        
+        self.loss_function = loss_gradient
+        self.learning_rate = learning_rate
+        self.momentum_rate = momentum_rate
+        self.previous_pos = None
+
     def __call__(self, pos):
         # Question TWO
-        pass
+
+        if self.previous_pos is None:
+            momentum = torch.tensor([0.0, 0.0])
+        else:
+            momentum = self.momentum_rate * (pos - self.previous_pos)
+        next_step = -self.learning_rate * self.loss_function(pos) + momentum
+        self.previous_pos = pos
+        return next_step
+
 
 
 def adagrad(rate, env):
