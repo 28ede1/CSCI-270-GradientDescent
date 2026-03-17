@@ -150,8 +150,24 @@ class RmsPropStepFunction:
     """
     def __init__(self, loss_gradient, learning_rate, decay_rate, delta=0.000001):
         # Question FOUR
-        pass
         
+        self.loss_function = loss_gradient
+        self.decay_rate = decay_rate
+        self.learning_rate = learning_rate
+        self.delta = delta
+
+        self.prev_decayed_average = None
+
     def __call__(self, pos):
         # Question FOUR
-        pass
+
+        current_gradient_pos_value = self.loss_function(pos)
+        
+        if self.prev_decayed_average is None:
+            current_decayed_average = current_gradient_pos_value ** 2
+        else:
+            current_decayed_average = self.decay_rate*(self.prev_decayed_average) + (1 - self.decay_rate)*(current_gradient_pos_value**2)
+
+        new_learning_rate = (self.learning_rate) / (self.delta + torch.sqrt(current_decayed_average))  
+        self.prev_decayed_average = current_decayed_average
+        return -new_learning_rate * current_gradient_pos_value  
