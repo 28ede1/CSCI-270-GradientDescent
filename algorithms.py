@@ -108,11 +108,23 @@ class AdagradStepFunction:
     """
     def __init__(self, loss_gradient, learning_rate, delta = 0.0000001):
         # Question THREE
-        pass
+        self.loss_function = loss_gradient
+        self.learning_rate = learning_rate
+        self.delta = delta
+        self.previous_pos = None
+
+        # keeps a running sum of the squared gradient values
+        self.odemeter_slope_track = torch.tensor([0.0, 0.0])
         
     def __call__(self, pos):
         # Question THREE
-        pass       
+
+        # calculate gradient at a position and then suqare. add this to the total. then square root that total
+
+        current_gradient_pos_value = self.loss_function(pos)
+        self.odemeter_slope_track += (current_gradient_pos_value ** 2)
+        new_learning_rate = (self.learning_rate) / (self.delta + torch.sqrt(self.odemeter_slope_track))  
+        return -new_learning_rate * current_gradient_pos_value  
 
 
 def rmsprop(rate, decay_rate, env):
